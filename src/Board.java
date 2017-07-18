@@ -77,7 +77,6 @@ public class Board {
         }
       }
     }
-    System.out.println(mines);
     return mines;
   }
 
@@ -106,6 +105,14 @@ public class Board {
     } else {
       System.out.println("You lose!");
     }
+
+    System.out.println("Closing game...");
+    try {
+      Thread.sleep(5000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 
@@ -130,5 +137,6 @@ public class Board {
         }
       }
     }
+    frame.pack();
   }
 }

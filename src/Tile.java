@@ -12,6 +12,7 @@ public class Tile extends JButton {
   private int number;
 
   public Tile(Board board, int x, int y, boolean isMine) {
+    super("X");
     this.board = board;
     this.x = x;
     this.y = y;
@@ -19,6 +20,7 @@ public class Tile extends JButton {
     this.isRevealed = false;
     this.flag = Flag.EMPTY;
     this.number = 0;
+    this.setSize(100, 100);
 
     this.addMouseListener(new MouseAdapter() {
       @Override
@@ -39,7 +41,7 @@ public class Tile extends JButton {
             }
             default:
           }
-        } else if (!isRevealed) {
+        } else if (!isRevealed && flag == Flag.EMPTY) {
           reveal();
         }
         board.updateTiles(false);
