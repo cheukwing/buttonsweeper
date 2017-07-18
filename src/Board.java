@@ -1,24 +1,28 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.util.Random;
 
 public class Board {
-  private final Square[][] board;
-  private final int numMines;
+  private final JFrame frame;
+  private final Tile[][] tiles;
   private final int width;
   private final int length;
   private int numRevealed;
-  private boolean hasLost;
+  private int numMines;
 
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 80;
   public static final int HARD_PROBABILITY = 70;
 
-  public Board(int width, int length, Difficulty difficulty) {
+  public Board(JFrame frame, int width, int length, Difficulty difficulty) {
+    this.frame = frame;
     this.width = width;
     this.length = length;
     this.numRevealed = 0;
-    this.hasLost = false;
-    this.board = new Square[length][width];
-    Random random = new Random();
+    this.tiles = new Tile[length][width];
+    this.numMines = 0;
+
     int probability;
     switch (difficulty) {
       case EASY: {
@@ -29,151 +33,102 @@ public class Board {
         probability = MEDIUM_PROBABILITY;
         break;
       }
-      case HARD:
-        // fall-through
-        // as enum, cannot not be HARD
-      default:
+      case HARD: // fall-through
+      default: {
         probability = HARD_PROBABILITY;
+      }
     }
 
-    int mineNum = 0;
-    for (int i = 0; i < length; i++) {
-      for (int j = 0; j < width; j++) {
+    frame.getContentPane().removeAll();
+    frame.setLayout(new GridLayout(length, width));
+    initialiseTiles(frame, probability);
+    frame.pack();
+    frame.setVisible(true);
+  }
+
+  private void initialiseTiles(JFrame frame, int probability) {
+    Random random = new Random();
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < length; y++) {
         boolean isMine = random.nextInt(100) > probability;
         if (isMine) {
-          ++mineNum;
+          ++numMines;
         }
-        board[i][j] = new Square(isMine);
+        tiles[y][x] = new Tile(this, x, y, isMine);
+        frame.add(tiles[y][x]);
       }
     }
 
-    for (int i = 0; i < length; i++) {
-      for (int j = 0; j < width; j++) {
-        board[i][j].setNumber(getSurroundingMines(j, i));
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < length; y++) {
+        tiles[y][x].setNumber(getSurroundingMines(x, y));
       }
     }
 
-    this.numMines = mineNum;
-  }
-
-  public boolean play(int x, int y) {
-    if (!withinBounds(x, y)) {
-      System.out.println("Tile out of bounds!");
-    } else if (board[y][x].getFlag() != Flag.EMPTY) {
-      System.out.println("Cannot reveal a flagged tile!");
-    } else if (board[y][x].isRevealedSquare()) {
-      System.out.println("Tile is already revealed!");
-    } else {
-      revealSurroundings(x, y);
-      hasLost = board[y][x].isMineSquare();
-      return true;
-    }
-    return false;
-  }
-
-  public boolean flag(int x, int y, Flag flag) {
-    if (!withinBounds(x, y)) {
-      System.out.println("Tile out of bounds!");
-    } else if (board[y][x].isRevealedSquare()) {
-      System.out.println("Tile is already revealed!");
-    } else if (board[y][x].getFlag() == flag) {
-      System.out.println("Tile already holds this flag!");
-    } else {
-      board[y][x].setFlag(flag);
-      return true;
-    }
-    return false;
-  }
-
-  private void revealSurroundings(int x, int y) {
-    board[y][x].reveal();
-    ++numRevealed;
-    if (board[y][x].getNumber() == 0) {
-      revealBlanks(x, y);
-    }
-  }
-
-  private void revealBlanks(int x, int y) {
-    for (int i = y - 1; i <= y + 1; i++) {
-      for (int j = x - 1; j <= x + 1; j++) {
-        if (withinBounds(j, i) && !board[i][j].isRevealedSquare() && !board[i][j].isMineSquare()) {
-          ++numRevealed;
-          board[i][j].reveal();
-          if (board[i][j].getNumber() == 0) {
-            revealBlanks(j, i);
-          }
-        }
-      }
-    }
+    updateTiles(false);
   }
 
   private int getSurroundingMines(int x, int y) {
-    int surroundingMines = 0;
-    for (int i = y - 1; i <= y + 1; i++) {
-      for (int j = x - 1; j <= x + 1; j++) {
-        if (withinBounds(j, i) && board[i][j].isMineSquare()) {
-          ++surroundingMines;
+    int mines = 0;
+    for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); i++) {
+      for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); j++) {
+        if (tiles[j][i].isMineTile()) {
+          ++mines;
         }
       }
     }
-    return surroundingMines;
+    System.out.println(mines);
+    return mines;
   }
 
-  private boolean withinBounds(int x, int y) {
-    return y >= 0 && y < length && x >= 0 && x < width;
+  public void incrementRevealed() {
+    ++numRevealed;
   }
 
-  public boolean hasFinished() {
-    return numRevealed == length * width - numMines || hasLost;
+  public void revealSurroundings(int x, int y) {
+    for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); i++) {
+      for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); j++) {
+        if (!tiles[j][i].isRevealedTile() && !tiles[j][i].isMineTile()) {
+          tiles[j][i].reveal();
+        }
+      }
+    }
   }
 
   public boolean hasWon() {
-    return hasFinished() && !hasLost;
+    return numRevealed == length * width - numMines;
   }
 
-  public void printBoard(boolean revealBombs) {
-    System.out.println("Board:");
-    System.out.printf("\\ ");
-    for (int i = 0; i < width; i++) {
-      System.out.printf(i + " ");
+  public void end() {
+    updateTiles(true);
+    if (hasWon()) {
+      System.out.println("You win!");
+    } else {
+      System.out.println("You lose!");
     }
-    System.out.printf("\n");
+    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+  }
 
+
+  public void updateTiles(boolean revealBombs) {
     for (int i = 0; i < length; i++) {
-      System.out.printf(i + " ");
       for (int j = 0; j < width; j++) {
-        Square square = board[i][j];
-        Flag flag = square.getFlag();
+        Tile tile = tiles[i][j];
+        Flag flag = tile.getFlag();
         if (flag != Flag.EMPTY) {
           if (flag == Flag.FLAGGED) {
-            System.out.printf("f ");
+            tile.setText("f");
           } else {
-            System.out.printf("? ");
+            tile.setText("?");
           }
-        } else if (square.isMineSquare() && (revealBombs || square.isRevealedSquare())) {
-          System.out.printf("x ");
-        } else if (!square.isRevealedSquare()) {
-          System.out.printf(". ");
+        } else if (tile.isMineTile() && (revealBombs || tile.isRevealedTile())) {
+          tile.setText("x");
+        } else if (!tile.isRevealedTile()) {
+          tile.setText(".");
         } else {
-          System.out.printf(square.getNumber() + " ");
+          tile.setText(Integer.toString(tile.getNumber()));
         }
       }
-      System.out.printf("\n");
-    }
-  }
-
-  public void fullBoardPrint() {
-    System.out.println("Full Board:");
-    for (int i = 0; i < length; i++) {
-      for (int j = 0; j < width; j++) {
-        Square square = board[i][j];
-        if (square.isMineSquare()) {
-          System.out.printf("x ");
-        } else {
-          System.out.printf(square.getNumber() + " ");
-        }
-      }
-      System.out.printf("\n");
     }
   }
 }

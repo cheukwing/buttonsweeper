@@ -42,8 +42,13 @@ public class Tile extends JButton {
         } else if (!isRevealed) {
           reveal();
         }
+        board.updateTiles(false);
       }
     });
+  }
+
+  public Flag getFlag() {
+    return flag;
   }
 
   public boolean isMineTile() {
@@ -54,9 +59,16 @@ public class Tile extends JButton {
     return isRevealed;
   }
 
-  private void reveal() {
+  public void reveal() {
     isRevealed = true;
+    board.incrementRevealed();
+    if (number == 0) {
+      board.revealSurroundings(x, y);
+    }
 
+    if (board.hasWon() || isMineTile()) {
+      board.end();
+    }
   }
 
   public void setNumber(int number) {

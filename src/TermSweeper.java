@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.event.WindowEvent;
 import java.util.Scanner;
 
 public class TermSweeper {
@@ -12,7 +14,7 @@ public class TermSweeper {
     return true;
   }
 
-  private static void game(Scanner sc) {
+  private static void game(JFrame frame, Scanner sc) {
     String input;
     do {
       System.out.println("Enter the board width: ");
@@ -47,71 +49,18 @@ public class TermSweeper {
         difficulty = Difficulty.HARD;
     }
 
-    Board board = new Board(width, length, difficulty);
-    System.out.println();
-
-    boolean isNecessaryToPrintBoard = true;
-    while (!board.hasFinished()) {
-      if (isNecessaryToPrintBoard) {
-        // prints the board only if the previous move was possible.
-        board.printBoard(false);
-      }
-
-      String[] tokens;
-      do {
-        System.out.println("Enter your move: ");
-        tokens = sc.nextLine().split(" ");
-      } while (!(tokens.length == 3 && Character.isAlphabetic(tokens[0].charAt(0))
-          && checkNumericString(tokens[1]) && checkNumericString(tokens[2])));
-      char c = tokens[0].charAt(0);
-      int x = Integer.parseInt(tokens[1]);
-      int y = Integer.parseInt(tokens[2]);
-
-      switch (c) {
-        case 'p': {
-          isNecessaryToPrintBoard = board.play(x, y);
-          break;
-        }
-        case 'f': {
-          isNecessaryToPrintBoard = board.flag(x, y, Flag.FLAGGED);
-          break;
-        }
-        case 'q': {
-          isNecessaryToPrintBoard = board.flag(x, y, Flag.QUESTION_FLAGGED);
-          break;
-        }
-        case 'c': {
-          isNecessaryToPrintBoard = board.flag(x, y, Flag.EMPTY);
-          break;
-        }
-        default: {
-          // if unrecognised command, proceeds as if asking for move again.
-          isNecessaryToPrintBoard = false;
-        }
-      }
-    }
-
-    board.printBoard(true);
-
-    if (board.hasWon()) {
-      System.out.println("You Win!");
-    } else {
-      System.out.println("You Lose!");
-    }
+    Board board = new Board(frame, width, length, difficulty);
   }
 
   public static void main(String[] args) {
-    System.out.println("Welcome to TermSweeper!");
-    System.out.println("To reveal a tile, type \"p <x> <y>\"");
-    System.out.println("To flag, qFlag or clear type \"f/q/c <x> <y> \"");
+    System.out.println("Welcome to ButtSweeper!");
 
     Scanner sc = new Scanner(System.in);
     String input;
-    do {
-      game(sc);
-      System.out.println("Do you want to play again? <y>/<n>");
-      input = sc.nextLine();
-    } while (input.length() > 0 && Character.toLowerCase(input.charAt(0)) == 'y');
+    JFrame frame = new JFrame("ButtSweeper");
+    frame.setLocationRelativeTo(null);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    game(frame, sc);
     sc.close();
   }
 }
