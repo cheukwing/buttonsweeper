@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.util.Scanner;
 
-public class TermSweeper {
+public class ButtSweeper {
 
   private static boolean checkNumericString(String str) {
     int len = str.length();
@@ -48,14 +48,13 @@ public class TermSweeper {
         difficulty = Difficulty.HARD;
     }
 
-    Board board = new Board(frame, width, length, difficulty);
+    new Board(frame, width, length, difficulty);
   }
 
   public static void main(String[] args) {
     System.out.println("Welcome to ButtSweeper!");
 
     Scanner sc = new Scanner(System.in);
-    String input;
     JFrame frame = new JFrame("ButtSweeper");
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

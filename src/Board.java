@@ -59,13 +59,16 @@ public class Board {
       }
     }
 
+    setTileNumbers();
+    updateTiles(false);
+  }
+
+  public void setTileNumbers() {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
         tiles[y][x].setNumber(getSurroundingMines(x, y));
       }
     }
-
-    updateTiles(false);
   }
 
   private int getSurroundingMines(int x, int y) {
@@ -105,15 +108,6 @@ public class Board {
     } else {
       System.out.println("You lose!");
     }
-
-    System.out.println("Closing game...");
-    try {
-      Thread.sleep(5000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 
 
@@ -138,5 +132,18 @@ public class Board {
       }
     }
     frame.pack();
+  }
+
+  public void firstRevealBombMove() {
+    int x = 0;
+    int y = 0;
+    while (y < length && tiles[y][x].isMineTile()) {
+      x = x >= width - 1 ? 0 : x + 1;
+    }
+    tiles[y][x].setMine();
+  }
+
+  public int getNumRevealed() {
+    return numRevealed;
   }
 }

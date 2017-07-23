@@ -6,7 +6,7 @@ public class Tile extends JButton {
   private final Board board;
   private final int x;
   private final int y;
-  private final boolean isMine;
+  private boolean isMine;
   private boolean isRevealed;
   private Flag flag;
   private int number;
@@ -20,7 +20,6 @@ public class Tile extends JButton {
     this.isRevealed = false;
     this.flag = Flag.EMPTY;
     this.number = 0;
-    this.setSize(100, 100);
 
     this.addMouseListener(new MouseAdapter() {
       @Override
@@ -57,12 +56,20 @@ public class Tile extends JButton {
     return isMine;
   }
 
+  public void setMine() {
+    isMine = true;
+  }
+
   public boolean isRevealedTile() {
     return isRevealed;
   }
 
   public void reveal() {
     isRevealed = true;
+    if (board.getNumRevealed() == 0 && isMineTile()) {
+      board.firstRevealBombMove();
+      board.setTileNumbers();
+    }
     board.incrementRevealed();
     if (number == 0) {
       board.revealSurroundings(x, y);
