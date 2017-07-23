@@ -7,5 +7,4 @@ it's like termsweeper but with butt(ons)
 * reset function
 * all terminal based commands ported to the frame
 * timer
-* no first click mine (NEED TO TEST)
-* no empty minefields
+* fix win state

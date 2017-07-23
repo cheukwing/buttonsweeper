@@ -8,9 +8,9 @@ public class Tile extends JButton {
   private Flag flag;
   private int number;
 
-  public Tile(Board board, int x, int y, boolean isMine) {
+  public Tile(Board board, int x, int y) {
     super("X");
-    this.isMine = isMine;
+    this.isMine = false;
     this.isRevealed = false;
     this.flag = Flag.EMPTY;
     this.number = 0;
@@ -52,6 +52,10 @@ public class Tile extends JButton {
 
   public void setMine() {
     isMine = true;
+  }
+
+  public void removeMine() {
+    isMine = false;
   }
 
   public boolean isRevealedTile() {

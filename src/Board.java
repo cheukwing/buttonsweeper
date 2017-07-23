@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
 import java.util.Random;
 
 public class Board {
@@ -41,26 +40,40 @@ public class Board {
 
     frame.getContentPane().removeAll();
     frame.setLayout(new GridLayout(length, width));
-    initialiseTiles(frame, probability);
+    initialiseGame(frame, probability);
     frame.pack();
     frame.setVisible(true);
   }
 
-  private void initialiseTiles(JFrame frame, int probability) {
-    Random random = new Random();
+  private void initialiseGame(JFrame frame, int probability) {
+    // add tiles to array
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
-        boolean isMine = random.nextInt(100) > probability;
-        if (isMine) {
-          ++numMines;
-        }
-        tiles[y][x] = new Tile(this, x, y, isMine);
+        tiles[y][x] = new Tile(this, x, y);
         frame.add(tiles[y][x]);
       }
     }
 
+    // add mines randomly, do not allow an empty board unless 1x1 board
+    Random random = new Random();
+    do {
+      addMines(random, probability);
+    } while (numMines < 1);
+
+    // update tile numbers
     setTileNumbers();
     updateTiles(false);
+  }
+
+  private void addMines(Random random, int probability) {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < length; y++) {
+        if (random.nextInt(100) > probability) {
+          tiles[y][x].setMine();
+          ++numMines;
+        }
+      }
+    }
   }
 
   private void setTileNumbers() {
@@ -101,9 +114,9 @@ public class Board {
     return numRevealed == length * width - numMines;
   }
 
-  private void end() {
+  private void end(boolean victory) {
     updateTiles(true);
-    if (hasWon()) {
+    if (victory) {
       System.out.println("You win!");
     } else {
       System.out.println("You lose!");
@@ -137,11 +150,23 @@ public class Board {
   private void firstRevealBombMove() {
     int x = 0;
     int y = 0;
+
+    // move the bomb to top left tile, if already a mine, continue till free space
     while (y < length && tiles[y][x].isMineTile()) {
       x = x >= width - 1 ? 0 : x + 1;
+      if (x >= width - 1) {
+        x = 0;
+        ++y;
+      } else {
+        ++x;
+      }
     }
-    tiles[y][x].setMine();
-    setTileNumbers();
+
+    // if there is a free space, set it as a mine and update the numbers
+    if (x < width && y < length) {
+      tiles[y][x].setMine();
+      setTileNumbers();
+    }
   }
 
   public int getNumRevealed() {
@@ -153,7 +178,9 @@ public class Board {
     Tile tile = tiles[y][x];
     tile.setRevealed();
 
+    // do not allow the first reveal to be a mine
     if (numRevealed == 0 && tile.isMineTile()) {
+      tile.removeMine();
       firstRevealBombMove();
     }
 
@@ -163,7 +190,7 @@ public class Board {
     incrementRevealed();
 
     if (hasWon() || tile.isMineTile()) {
-      end();
+      end(!tile.isMineTile());
     }
   }
 }
