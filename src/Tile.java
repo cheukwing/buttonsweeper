@@ -3,9 +3,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Tile extends JButton {
-  private final Board board;
-  private final int x;
-  private final int y;
   private boolean isMine;
   private boolean isRevealed;
   private Flag flag;
@@ -13,9 +10,6 @@ public class Tile extends JButton {
 
   public Tile(Board board, int x, int y, boolean isMine) {
     super("X");
-    this.board = board;
-    this.x = x;
-    this.y = y;
     this.isMine = isMine;
     this.isRevealed = false;
     this.flag = Flag.EMPTY;
@@ -41,7 +35,7 @@ public class Tile extends JButton {
             default:
           }
         } else if (!isRevealed && flag == Flag.EMPTY) {
-          reveal();
+          board.revealTile(x, y);
         }
         board.updateTiles(false);
       }
@@ -64,27 +58,15 @@ public class Tile extends JButton {
     return isRevealed;
   }
 
-  public void reveal() {
-    isRevealed = true;
-    if (board.getNumRevealed() == 0 && isMineTile()) {
-      board.firstRevealBombMove();
-      board.setTileNumbers();
-    }
-    board.incrementRevealed();
-    if (number == 0) {
-      board.revealSurroundings(x, y);
-    }
-
-    if (board.hasWon() || isMineTile()) {
-      board.end();
-    }
-  }
-
   public void setNumber(int number) {
     this.number = number;
   }
 
   public int getNumber() {
     return number;
+  }
+
+  public void setRevealed() {
+    isRevealed = true;
   }
 }

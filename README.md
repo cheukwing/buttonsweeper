@@ -9,4 +9,3 @@ it's like termsweeper but with butt(ons)
 * timer
 * no first click mine (NEED TO TEST)
 * no empty minefields
-* clean spaghetti

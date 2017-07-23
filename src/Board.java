@@ -63,7 +63,7 @@ public class Board {
     updateTiles(false);
   }
 
-  public void setTileNumbers() {
+  private void setTileNumbers() {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
         tiles[y][x].setNumber(getSurroundingMines(x, y));
@@ -83,25 +83,25 @@ public class Board {
     return mines;
   }
 
-  public void incrementRevealed() {
+  private void incrementRevealed() {
     ++numRevealed;
   }
 
-  public void revealSurroundings(int x, int y) {
+  private void revealSurroundings(int x, int y) {
     for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); i++) {
       for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); j++) {
         if (!tiles[j][i].isRevealedTile() && !tiles[j][i].isMineTile()) {
-          tiles[j][i].reveal();
+          revealTile(i, j);
         }
       }
     }
   }
 
-  public boolean hasWon() {
+  private boolean hasWon() {
     return numRevealed == length * width - numMines;
   }
 
-  public void end() {
+  private void end() {
     updateTiles(true);
     if (hasWon()) {
       System.out.println("You win!");
@@ -134,16 +134,36 @@ public class Board {
     frame.pack();
   }
 
-  public void firstRevealBombMove() {
+  private void firstRevealBombMove() {
     int x = 0;
     int y = 0;
     while (y < length && tiles[y][x].isMineTile()) {
       x = x >= width - 1 ? 0 : x + 1;
     }
     tiles[y][x].setMine();
+    setTileNumbers();
   }
 
   public int getNumRevealed() {
     return numRevealed;
+  }
+
+  // PRE: x, y are in bounds
+  public void revealTile(int x, int y) {
+    Tile tile = tiles[y][x];
+    tile.setRevealed();
+
+    if (numRevealed == 0 && tile.isMineTile()) {
+      firstRevealBombMove();
+    }
+
+    if (tile.getNumber() == 0) {
+      revealSurroundings(x, y);
+    }
+    incrementRevealed();
+
+    if (hasWon() || tile.isMineTile()) {
+      end();
+    }
   }
 }
