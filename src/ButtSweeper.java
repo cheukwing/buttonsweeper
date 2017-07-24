@@ -4,16 +4,6 @@ public class ButtSweeper {
 
   public static final int DEFAULT_SIZE = 5;
 
-  private static boolean checkNumericString(String str) {
-    int len = str.length();
-    for (int i = 0; i < len; i++) {
-      if (!Character.isDigit(str.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   private static String getInputHelper(String inputDialog, Object[] options) {
     Object input = JOptionPane.showInputDialog(null, inputDialog, "ButtSweeper",
         JOptionPane.PLAIN_MESSAGE, null, options, options == null ? "" : options[0]);
