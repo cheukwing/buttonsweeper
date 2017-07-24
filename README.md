@@ -7,4 +7,3 @@ it's like termsweeper but with butt(ons)
 * reset function
 * all terminal based commands ported to the frame
 * timer
-* fix win state

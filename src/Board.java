@@ -9,6 +9,7 @@ public class Board {
   private final int length;
   private int numRevealed;
   private int numMines;
+  private boolean gameEnded;
 
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 80;
@@ -21,6 +22,7 @@ public class Board {
     this.numRevealed = 0;
     this.tiles = new Tile[length][width];
     this.numMines = 0;
+    this.gameEnded = false;
 
     int probability;
     switch (difficulty) {
@@ -121,6 +123,11 @@ public class Board {
     } else {
       System.out.println("You lose!");
     }
+    gameEnded = true;
+  }
+
+  public boolean hasGameEnded() {
+    return gameEnded;
   }
 
 
@@ -167,10 +174,6 @@ public class Board {
       tiles[y][x].setMine();
       setTileNumbers();
     }
-  }
-
-  public int getNumRevealed() {
-    return numRevealed;
   }
 
   // PRE: x, y are in bounds

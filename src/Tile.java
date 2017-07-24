@@ -18,26 +18,28 @@ public class Tile extends JButton {
     this.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent mouseEvent) {
-        if (SwingUtilities.isRightMouseButton(mouseEvent) && !isRevealed) {
-          switch (flag) {
-            case EMPTY: {
-              flag = Flag.FLAGGED;
-              break;
+        if (!board.hasGameEnded()) {
+          if (SwingUtilities.isRightMouseButton(mouseEvent) && !isRevealed) {
+            switch (flag) {
+              case EMPTY: {
+                flag = Flag.FLAGGED;
+                break;
+              }
+              case FLAGGED: {
+                flag = Flag.QUESTION_FLAGGED;
+                break;
+              }
+              case QUESTION_FLAGGED: {
+                flag = Flag.EMPTY;
+                // fall-through
+              }
+              default:
             }
-            case FLAGGED: {
-              flag = Flag.QUESTION_FLAGGED;
-              break;
-            }
-            case QUESTION_FLAGGED: {
-              flag = Flag.EMPTY;
-              // fall-through
-            }
-            default:
+          } else if (!isRevealed && flag == Flag.EMPTY) {
+            board.revealTile(x, y);
           }
-        } else if (!isRevealed && flag == Flag.EMPTY) {
-          board.revealTile(x, y);
+          board.updateTiles(false);
         }
-        board.updateTiles(false);
       }
     });
   }
