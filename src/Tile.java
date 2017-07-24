@@ -18,7 +18,7 @@ public class Tile extends JButton {
     this.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent mouseEvent) {
-        if (!board.hasGameEnded()) {
+        if (!board.getHasGameEnded()) {
           if (SwingUtilities.isRightMouseButton(mouseEvent) && !isRevealed) {
             switch (flag) {
               case EMPTY: {
@@ -48,6 +48,10 @@ public class Tile extends JButton {
     return flag;
   }
 
+  public void clearFlag() {
+    flag = Flag.EMPTY;
+  }
+
   public boolean isMineTile() {
     return isMine;
   }
@@ -74,5 +78,9 @@ public class Tile extends JButton {
 
   public void setRevealed() {
     isRevealed = true;
+  }
+
+  public void removeRevealed() {
+    isRevealed = false;
   }
 }

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class Board {
@@ -9,7 +11,8 @@ public class Board {
   private final int length;
   private int numRevealed;
   private int numMines;
-  private boolean gameEnded;
+  private boolean hasGameEnded;
+  private boolean hasReset;
 
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 80;
@@ -22,7 +25,8 @@ public class Board {
     this.numRevealed = 0;
     this.tiles = new Tile[length][width];
     this.numMines = 0;
-    this.gameEnded = false;
+    this.hasGameEnded = false;
+    this.hasReset = false;
 
     int probability;
     switch (difficulty) {
@@ -41,18 +45,32 @@ public class Board {
     }
 
     frame.getContentPane().removeAll();
-    frame.setLayout(new GridLayout(length, width));
-    initialiseGame(frame, probability);
+
+    JPanel mineField = new JPanel();
+    mineField.setLayout(new GridLayout(length, width));
+    initialiseGame(mineField, probability);
+    frame.add(mineField, BorderLayout.CENTER);
     frame.pack();
+
+    JButton resetButton = new JButton("Reset");
+    resetButton.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseReleased(MouseEvent mouseEvent) {
+        reset();
+      }
+    });
+
+    frame.add(resetButton, BorderLayout.SOUTH);
+
     frame.setVisible(true);
   }
 
-  private void initialiseGame(JFrame frame, int probability) {
+  private void initialiseGame(JPanel mineField, int probability) {
     // add tiles to array
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
         tiles[y][x] = new Tile(this, x, y);
-        frame.add(tiles[y][x]);
+        mineField.add(tiles[y][x]);
       }
     }
 
@@ -123,11 +141,11 @@ public class Board {
     } else {
       System.out.println("You lose!");
     }
-    gameEnded = true;
+    hasGameEnded = true;
   }
 
-  public boolean hasGameEnded() {
-    return gameEnded;
+  public boolean getHasGameEnded() {
+    return hasGameEnded;
   }
 
 
@@ -182,7 +200,7 @@ public class Board {
     tile.setRevealed();
 
     // do not allow the first reveal to be a mine
-    if (numRevealed == 0 && tile.isMineTile()) {
+    if (numRevealed == 0 && tile.isMineTile() && !hasReset) {
       tile.removeMine();
       firstRevealBombMove();
     }
@@ -195,5 +213,18 @@ public class Board {
     if (hasWon() || tile.isMineTile()) {
       end(!tile.isMineTile());
     }
+  }
+
+  public void reset() {
+    numRevealed = 0;
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < length; y++) {
+        tiles[y][x].removeRevealed();
+        tiles[y][x].clearFlag();
+      }
+    }
+    hasReset = true;
+    updateTiles(false);
+    hasGameEnded = false;
   }
 }
