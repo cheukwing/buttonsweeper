@@ -147,12 +147,16 @@ public class Board {
     return numRevealed == length * width - numMines;
   }
 
+  private void messageHelper(String message) {
+    JOptionPane.showMessageDialog(null, message, "ButtSweeper", JOptionPane.INFORMATION_MESSAGE);
+  }
+
   private void end(boolean victory) {
     updateTiles(true);
     if (victory) {
-      System.out.println("You win!");
+      messageHelper("You Win!");
     } else {
-      System.out.println("You lose!");
+      messageHelper("You Lose!");
     }
     hasGameEnded = true;
   }

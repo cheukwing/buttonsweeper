@@ -38,8 +38,8 @@ public class Tile extends JButton {
           } else if (!isRevealed && flag == Flag.EMPTY) {
             board.revealTile(x, y);
           }
-          board.updateTiles(false);
         }
+        board.updateTiles(board.getHasGameEnded());
       }
     });
   }
