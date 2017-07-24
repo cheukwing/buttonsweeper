@@ -13,7 +13,7 @@ public class ButtSweeper {
     return (String) input;
   }
 
-  private static void game(JFrame frame) {
+  public static void game(JFrame frame) {
     int width = DEFAULT_SIZE;
     int length = DEFAULT_SIZE;
     String input;

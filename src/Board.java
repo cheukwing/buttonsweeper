@@ -50,7 +50,9 @@ public class Board {
     mineField.setLayout(new GridLayout(length, width));
     initialiseGame(mineField, probability);
     frame.add(mineField, BorderLayout.CENTER);
-    frame.pack();
+
+    JPanel options = new JPanel();
+    options.setLayout(new GridLayout(0, 2));
 
     JButton resetButton = new JButton("Reset");
     resetButton.addMouseListener(new MouseAdapter() {
@@ -59,8 +61,19 @@ public class Board {
         reset();
       }
     });
+    options.add(resetButton);
 
-    frame.add(resetButton, BorderLayout.SOUTH);
+    JButton newGameButton = new JButton("New Game");
+    newGameButton.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseReleased(MouseEvent mouseEvent) {
+        ButtSweeper.game(frame);
+      }
+    });
+    options.add(newGameButton);
+
+    frame.add(options, BorderLayout.SOUTH);
+    frame.pack();
 
     frame.setVisible(true);
   }
