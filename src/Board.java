@@ -15,8 +15,8 @@ public class Board {
   private boolean hasReset;
 
   public static final int EASY_PROBABILITY = 90;
-  public static final int MEDIUM_PROBABILITY = 80;
-  public static final int HARD_PROBABILITY = 70;
+  public static final int MEDIUM_PROBABILITY = 85;
+  public static final int HARD_PROBABILITY = 80;
 
   public Board(JFrame frame, int width, int length, Difficulty difficulty) {
     this.frame = frame;
