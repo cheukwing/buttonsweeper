@@ -1,7 +1,8 @@
 import javax.swing.*;
-import java.util.Scanner;
 
 public class ButtSweeper {
+
+  public static final int DEFAULT_SIZE = 5;
 
   private static boolean checkNumericString(String str) {
     int len = str.length();
@@ -13,52 +14,60 @@ public class ButtSweeper {
     return true;
   }
 
-  private static void game(JFrame frame, Scanner sc) {
+  private static String getInputHelper(String inputDialog, Object[] options) {
+    Object input = JOptionPane.showInputDialog(null, inputDialog, "ButtSweeper",
+        JOptionPane.PLAIN_MESSAGE, null, options, options == null ? "" : options[0]);
+    if (input == null) {
+      System.exit(0);
+    }
+    return (String) input;
+  }
+
+  private static void game(JFrame frame) {
+    int width = DEFAULT_SIZE;
+    int length = DEFAULT_SIZE;
     String input;
-    do {
-      System.out.println("Enter the board width: ");
-      input = sc.nextLine();
-    } while (input.length() < 1 || !checkNumericString(input));
-    int width = Integer.parseInt(input);
 
-    do {
-      System.out.println("Enter the board length: ");
-      input = sc.nextLine();
-    } while (input.length() < 1 || !checkNumericString(input));
-    int length = Integer.parseInt(input);
+    try {
+      input = getInputHelper("Enter the board width: ", null);
+      width = Integer.parseInt(input);
+    } catch (NumberFormatException e) {
+      JOptionPane.showMessageDialog(null, "Invalid input, defaulting to 5.");
+    }
 
-    do {
-      System.out.println("Enter your difficulty: <E>asy <M>edium <H>ard");
-      input = sc.nextLine();
-    } while (input.length() != 1
-        || (input.charAt(0) != 'E' && input.charAt(0) != 'M' && input.charAt(0) != 'H'));
+    try {
+      input = getInputHelper("Enter the board length: ", null);
+      length = Integer.parseInt(input);
+    } catch (NumberFormatException e) {
+      JOptionPane.showMessageDialog(null, "Invalid input, defaulting to 5.");
+    }
+
+    Object[] difficulties = {"Easy", "Medium", "Hard"};
+    input = getInputHelper("Choose difficulty: ", difficulties);
+
     Difficulty difficulty;
-    switch (input.charAt(0)) {
-      case 'E': {
+    switch (input) {
+      case "Easy": {
         difficulty = Difficulty.EASY;
         break;
       }
-      case 'M': {
+      case "Medium": {
         difficulty = Difficulty.MEDIUM;
         break;
       }
-      case 'H':
-        // fall-through
-      default:
+      case "Hard": // fall-through
+      default: {
         difficulty = Difficulty.HARD;
+      }
     }
 
     new Board(frame, width, length, difficulty);
   }
 
   public static void main(String[] args) {
-    System.out.println("Welcome to ButtSweeper!");
-
-    Scanner sc = new Scanner(System.in);
     JFrame frame = new JFrame("ButtSweeper");
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    game(frame, sc);
-    sc.close();
+    game(frame);
   }
 }
