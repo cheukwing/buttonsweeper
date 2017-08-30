@@ -19,6 +19,7 @@ public class Board {
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 85;
   public static final int HARD_PROBABILITY = 80;
+  public static final int SPRITE_RESIZE = 32;
 
   public Board(ButtSweeper buttSweeper, int width, int length,
                Difficulty difficulty, SpriteHolder spriteHolder) {
@@ -157,7 +158,8 @@ public class Board {
   }
 
   private void messageHelper(String message) {
-    JOptionPane.showMessageDialog(null, message, "ButtSweeper", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(null, message,
+        "ButtonSweeper", JOptionPane.INFORMATION_MESSAGE);
   }
 
   private void end(boolean victory) {
@@ -178,30 +180,13 @@ public class Board {
   public void updateTiles(boolean revealBombs) {
     for (int i = 0; i < length; ++i) {
       for (int j = 0; j < width; ++j) {
-        tiles[i][j].setIcon(new ImageIcon(spriteHolder.getTileImage(tiles[i][j], revealBombs)));
+        tiles[i][j].setIcon(
+            new ImageIcon(
+                spriteHolder
+                    .getTileImage(tiles[i][j], revealBombs)
+                    .getScaledInstance(SPRITE_RESIZE, SPRITE_RESIZE, Image.SCALE_SMOOTH)));
       }
     }
-    frame.pack();
-//    for (int i = 0; i < length; i++) {
-//      for (int j = 0; j < width; j++) {
-//        Tile tile = tiles[i][j];
-//        Flag flag = tile.getFlag();
-//        if (flag != Flag.EMPTY) {
-//          if (flag == Flag.FLAGGED) {
-//            tile.setText("f");
-//          } else {
-//            tile.setText("?");
-//          }
-//        } else if (tile.isMineTile() && (revealBombs || tile.isRevealedTile())) {
-//          tile.setText("x");
-//        } else if (!tile.isRevealedTile()) {
-//          tile.setText(".");
-//        } else {
-//          tile.setText(Integer.toString(tile.getNumber()));
-//        }
-//      }
-//    }
-//    frame.pack();
   }
 
   private void firstRevealBombMove() {
@@ -210,7 +195,7 @@ public class Board {
 
     // move the bomb to top left tile, if already a mine, continue till free space
     while (y < length && tiles[y][x].isMineTile()) {
-      x = x >= width - 1 ? 0 : x + 1;
+      // x = x >= width - 1 ? 0 : x + 1;
       if (x >= width - 1) {
         x = 0;
         ++y;

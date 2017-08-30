@@ -9,7 +9,7 @@ public class ButtSweeper {
   private final SpriteHolder spriteHolder;
 
   private ButtSweeper() throws IOException {
-    this.frame = new JFrame("ButtSweeper");
+    this.frame = new JFrame("ButtonSweeper");
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.spriteHolder = new SpriteHolder();

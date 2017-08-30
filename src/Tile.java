@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -19,21 +20,7 @@ public class Tile extends JButton {
       public void mouseReleased(MouseEvent mouseEvent) {
         if (!board.getHasGameEnded()) {
           if (SwingUtilities.isRightMouseButton(mouseEvent) && !isRevealed) {
-            switch (flag) {
-              case EMPTY: {
-                flag = Flag.FLAGGED;
-                break;
-              }
-              case FLAGGED: {
-                flag = Flag.QUESTION_FLAGGED;
-                break;
-              }
-              case QUESTION_FLAGGED: {
-                flag = Flag.EMPTY;
-                // fall-through
-              }
-              default:
-            }
+            flag = Flag.values()[(flag.ordinal() + 1) % Flag.values().length];
           } else if (!isRevealed && flag == Flag.EMPTY) {
             board.revealTile(x, y);
           }
@@ -41,6 +28,9 @@ public class Tile extends JButton {
         board.updateTiles(board.getHasGameEnded());
       }
     });
+    this.setBorder(BorderFactory.createEmptyBorder());
+    this.setContentAreaFilled(false);
+    this.setMargin(new Insets(0, 0, 0, 0));
   }
 
   public Flag getFlag() {
