@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class Board {
   private final ButtSweeper buttSweeper;
+  private final SpriteHolder spriteHolder;
   private final JFrame frame;
   private final Tile[][] tiles;
   private final int width;
@@ -19,8 +20,10 @@ public class Board {
   public static final int MEDIUM_PROBABILITY = 85;
   public static final int HARD_PROBABILITY = 80;
 
-  public Board(ButtSweeper buttSweeper, int width, int length, Difficulty difficulty) {
+  public Board(ButtSweeper buttSweeper, int width, int length,
+               Difficulty difficulty, SpriteHolder spriteHolder) {
     this.buttSweeper = buttSweeper;
+    this.spriteHolder = spriteHolder;
     this.frame = buttSweeper.getFrame();
     this.width = width;
     this.length = length;
@@ -173,26 +176,32 @@ public class Board {
 
 
   public void updateTiles(boolean revealBombs) {
-    for (int i = 0; i < length; i++) {
-      for (int j = 0; j < width; j++) {
-        Tile tile = tiles[i][j];
-        Flag flag = tile.getFlag();
-        if (flag != Flag.EMPTY) {
-          if (flag == Flag.FLAGGED) {
-            tile.setText("f");
-          } else {
-            tile.setText("?");
-          }
-        } else if (tile.isMineTile() && (revealBombs || tile.isRevealedTile())) {
-          tile.setText("x");
-        } else if (!tile.isRevealedTile()) {
-          tile.setText(".");
-        } else {
-          tile.setText(Integer.toString(tile.getNumber()));
-        }
+    for (int i = 0; i < length; ++i) {
+      for (int j = 0; j < width; ++j) {
+        tiles[i][j].setIcon(new ImageIcon(spriteHolder.getTileImage(tiles[i][j], revealBombs)));
       }
     }
     frame.pack();
+//    for (int i = 0; i < length; i++) {
+//      for (int j = 0; j < width; j++) {
+//        Tile tile = tiles[i][j];
+//        Flag flag = tile.getFlag();
+//        if (flag != Flag.EMPTY) {
+//          if (flag == Flag.FLAGGED) {
+//            tile.setText("f");
+//          } else {
+//            tile.setText("?");
+//          }
+//        } else if (tile.isMineTile() && (revealBombs || tile.isRevealedTile())) {
+//          tile.setText("x");
+//        } else if (!tile.isRevealedTile()) {
+//          tile.setText(".");
+//        } else {
+//          tile.setText(Integer.toString(tile.getNumber()));
+//        }
+//      }
+//    }
+//    frame.pack();
   }
 
   private void firstRevealBombMove() {

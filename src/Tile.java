@@ -9,7 +9,6 @@ public class Tile extends JButton {
   private int number;
 
   public Tile(Board board, int x, int y) {
-    super("X");
     this.isMine = false;
     this.isRevealed = false;
     this.flag = Flag.EMPTY;
@@ -83,4 +82,5 @@ public class Tile extends JButton {
   public void removeRevealed() {
     isRevealed = false;
   }
+
 }

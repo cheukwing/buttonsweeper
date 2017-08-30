@@ -1,13 +1,18 @@
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class ButtSweeper {
   private final JFrame frame;
+  private final SpriteHolder spriteHolder;
 
-  private ButtSweeper() {
+  private ButtSweeper() throws IOException {
     this.frame = new JFrame("ButtSweeper");
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.spriteHolder = new SpriteHolder();
   }
 
   public JFrame getFrame() {
@@ -38,7 +43,7 @@ public class ButtSweeper {
           int length = Integer.parseInt(lengthField.getText());
           Difficulty difficulty = Difficulty.values()[difficultySelector.getSelectedIndex()];
           haveInput = true;
-          new Board(this, width, length, difficulty);
+          new Board(this, width, length, difficulty, spriteHolder);
         } catch (NumberFormatException e) {
           JOptionPane.showMessageDialog(null, "Invalid input!");
         }
@@ -49,7 +54,12 @@ public class ButtSweeper {
   }
 
   public static void main(String[] args) {
-    ButtSweeper buttSweeper = new ButtSweeper();
-    buttSweeper.newGame();
+    try {
+      ButtSweeper buttSweeper = new ButtSweeper();
+      buttSweeper.newGame();
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.out.println("ERROR: Could not find spritesheet!");
+    }
   }
 }
