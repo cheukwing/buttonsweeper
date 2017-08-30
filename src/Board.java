@@ -73,7 +73,7 @@ public class Board {
     newGameButton.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent mouseEvent) {
-        buttSweeper.game();
+        buttSweeper.newGame();
       }
     });
     options.add(newGameButton);
@@ -238,7 +238,7 @@ public class Board {
     }
   }
 
-  public void reset() {
+  private void reset() {
     numRevealed = 0;
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {

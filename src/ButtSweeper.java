@@ -1,11 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class ButtSweeper {
-  public static final int DEFAULT_SIZE = 5;
-
   private final JFrame frame;
 
-  public ButtSweeper() {
+  private ButtSweeper() {
     this.frame = new JFrame("ButtSweeper");
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -15,58 +14,42 @@ public class ButtSweeper {
     return frame;
   }
 
-  private static String getInputHelper(String inputDialog, Object[] options) {
-    Object input = JOptionPane.showInputDialog(null, inputDialog, "ButtSweeper",
-        JOptionPane.PLAIN_MESSAGE, null, options, options == null ? "" : options[0]);
-    if (input == null) {
-      System.exit(0);
-    }
-    return (String) input;
-  }
+  public void newGame() {
+    JPanel optionBox = new JPanel();
+    JTextField widthField = new JTextField();
+    JTextField lengthField = new JTextField();
+    String[] difficulties = {"Easy", "Medium", "Hard"};
+    JComboBox<String> difficultySelector = new JComboBox<>(difficulties);
+    optionBox.setLayout(new GridLayout(3, 2));
 
-  public void game() {
-    int width = DEFAULT_SIZE;
-    int length = DEFAULT_SIZE;
-    String input;
+    optionBox.add(new JLabel("Width: "));
+    optionBox.add(widthField);
+    optionBox.add(new JLabel("Length: "));
+    optionBox.add(lengthField);
+    optionBox.add(new JLabel("Difficulty: "));
+    optionBox.add(difficultySelector);
 
-    try {
-      input = getInputHelper("Enter the board width: ", null);
-      width = Integer.parseInt(input);
-    } catch (NumberFormatException e) {
-      JOptionPane.showMessageDialog(null, "Invalid input, defaulting to 5.");
-    }
-
-    try {
-      input = getInputHelper("Enter the board length: ", null);
-      length = Integer.parseInt(input);
-    } catch (NumberFormatException e) {
-      JOptionPane.showMessageDialog(null, "Invalid input, defaulting to 5.");
-    }
-
-    Object[] difficulties = {"Easy", "Medium", "Hard"};
-    input = getInputHelper("Choose difficulty: ", difficulties);
-
-    Difficulty difficulty;
-    switch (input) {
-      case "Easy": {
-        difficulty = Difficulty.EASY;
-        break;
-      }
-      case "Medium": {
-        difficulty = Difficulty.MEDIUM;
-        break;
-      }
-      case "Hard": // fall-through
-      default: {
-        difficulty = Difficulty.HARD;
+    boolean haveInput = false;
+    while (!haveInput) {
+      int result = JOptionPane.showConfirmDialog(null, optionBox, "New Game", JOptionPane.OK_CANCEL_OPTION);
+      if (result == JOptionPane.OK_OPTION) {
+        try {
+          int width = Integer.parseInt(widthField.getText());
+          int length = Integer.parseInt(lengthField.getText());
+          Difficulty difficulty = Difficulty.values()[difficultySelector.getSelectedIndex()];
+          haveInput = true;
+          new Board(this, width, length, difficulty);
+        } catch (NumberFormatException e) {
+          JOptionPane.showMessageDialog(null, "Invalid input!");
+        }
+      } else {
+        haveInput = true;
       }
     }
-
-    new Board(this, width, length, difficulty);
   }
 
   public static void main(String[] args) {
     ButtSweeper buttSweeper = new ButtSweeper();
-    buttSweeper.game();
+    buttSweeper.newGame();
   }
 }

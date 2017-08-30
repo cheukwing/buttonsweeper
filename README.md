@@ -5,4 +5,3 @@ Name refers to the usage of JButtons.
 ## Future Extensions
 * Timer
 * Use images instead of characters
-* Unify new game options to one dialog box
