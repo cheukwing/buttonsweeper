@@ -1,8 +1,19 @@
 import javax.swing.*;
 
 public class ButtSweeper {
-
   public static final int DEFAULT_SIZE = 5;
+
+  private final JFrame frame;
+
+  public ButtSweeper() {
+    this.frame = new JFrame("ButtSweeper");
+    frame.setLocationRelativeTo(null);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  }
+
+  public JFrame getFrame() {
+    return frame;
+  }
 
   private static String getInputHelper(String inputDialog, Object[] options) {
     Object input = JOptionPane.showInputDialog(null, inputDialog, "ButtSweeper",
@@ -13,7 +24,7 @@ public class ButtSweeper {
     return (String) input;
   }
 
-  public static void game(JFrame frame) {
+  public void game() {
     int width = DEFAULT_SIZE;
     int length = DEFAULT_SIZE;
     String input;
@@ -51,13 +62,11 @@ public class ButtSweeper {
       }
     }
 
-    new Board(frame, width, length, difficulty);
+    new Board(this, width, length, difficulty);
   }
 
   public static void main(String[] args) {
-    JFrame frame = new JFrame("ButtSweeper");
-    frame.setLocationRelativeTo(null);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    game(frame);
+    ButtSweeper buttSweeper = new ButtSweeper();
+    buttSweeper.game();
   }
 }

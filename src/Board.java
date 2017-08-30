@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class Board {
+  private final ButtSweeper buttSweeper;
   private final JFrame frame;
   private final Tile[][] tiles;
   private final int width;
@@ -18,8 +19,9 @@ public class Board {
   public static final int MEDIUM_PROBABILITY = 85;
   public static final int HARD_PROBABILITY = 80;
 
-  public Board(JFrame frame, int width, int length, Difficulty difficulty) {
-    this.frame = frame;
+  public Board(ButtSweeper buttSweeper, int width, int length, Difficulty difficulty) {
+    this.buttSweeper = buttSweeper;
+    this.frame = buttSweeper.getFrame();
     this.width = width;
     this.length = length;
     this.numRevealed = 0;
@@ -44,6 +46,10 @@ public class Board {
       }
     }
 
+    setup(probability);
+  }
+
+  private void setup(int probability) {
     frame.getContentPane().removeAll();
 
     JPanel mineField = new JPanel();
@@ -67,7 +73,7 @@ public class Board {
     newGameButton.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent mouseEvent) {
-        ButtSweeper.game(frame);
+        buttSweeper.game();
       }
     });
     options.add(newGameButton);
