@@ -1,3 +1,9 @@
+package ButtonSweeper;
+
+import ButtonSweeper.Tiles.MineTile;
+import ButtonSweeper.Tiles.NumberTile;
+import ButtonSweeper.Util.Difficulty;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -8,6 +14,7 @@ public class Board {
   private final ButtSweeper buttSweeper;
   private final SpriteHolder spriteHolder;
   private final JFrame frame;
+  private final JPanel mineField;
   private final Tile[][] tiles;
   private final int width;
   private final int length;
@@ -18,13 +25,13 @@ public class Board {
 
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 85;
-  public static final int HARD_PROBABILITY = 80;
+  public static final int HARD_PROBABILITY = 50;
   public static final int SPRITE_RESIZE = 32;
 
   public Board(ButtSweeper buttSweeper, int width, int length,
-               Difficulty difficulty, SpriteHolder spriteHolder) {
+               Difficulty difficulty) {
     this.buttSweeper = buttSweeper;
-    this.spriteHolder = spriteHolder;
+    this.spriteHolder = buttSweeper.getSpriteHolder();
     this.frame = buttSweeper.getFrame();
     this.width = width;
     this.length = length;
@@ -33,6 +40,7 @@ public class Board {
     this.numMines = 0;
     this.hasGameEnded = false;
     this.hasReset = false;
+    this.mineField = new JPanel(new GridLayout(length, width));
 
     int probability;
     switch (difficulty) {
@@ -56,9 +64,7 @@ public class Board {
   private void setup(int probability) {
     frame.getContentPane().removeAll();
 
-    JPanel mineField = new JPanel();
-    mineField.setLayout(new GridLayout(length, width));
-    initialiseGame(mineField, probability);
+    initialiseGame(probability);
     frame.add(mineField, BorderLayout.CENTER);
 
     JPanel options = new JPanel();
@@ -88,21 +94,22 @@ public class Board {
     frame.setVisible(true);
   }
 
-  private void initialiseGame(JPanel mineField, int probability) {
+  private void initialiseGame(int probability) {
     // add tiles to array
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
-        tiles[y][x] = new Tile(this, x, y);
-        mineField.add(tiles[y][x]);
+        tiles[y][x] = new NumberTile(this, x, y);
       }
     }
+
 
     // add mines randomly, do not allow an empty board unless 1x1 board
     Random random = new Random();
     do {
       addMines(random, probability);
-    } while (numMines < 1);
+    } while (numMines < 1 && width * length != 1);
 
+    refreshPanel();
     // update tile numbers
     setTileNumbers();
     updateTiles(false);
@@ -112,7 +119,7 @@ public class Board {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
         if (random.nextInt(100) > probability) {
-          tiles[y][x].setMine();
+          tiles[y][x] = new MineTile(this, x, y);
           ++numMines;
         }
       }
@@ -189,13 +196,12 @@ public class Board {
     }
   }
 
-  private void firstRevealBombMove() {
+  private void firstRevealBombMove(int revealedX, int revealedY) {
     int x = 0;
     int y = 0;
 
     // move the bomb to top left tile, if already a mine, continue till free space
-    while (y < length && tiles[y][x].isMineTile()) {
-      // x = x >= width - 1 ? 0 : x + 1;
+    while (y < length && tiles[y][x].isMineTile() || (y == revealedY && x == revealedX)) {
       if (x >= width - 1) {
         x = 0;
         ++y;
@@ -206,8 +212,19 @@ public class Board {
 
     // if there is a free space, set it as a mine and update the numbers
     if (x < width && y < length) {
-      tiles[y][x].setMine();
+      tiles[y][x] = new MineTile(this, x, y);
       setTileNumbers();
+    }
+
+    refreshPanel();
+  }
+
+  private void refreshPanel() {
+    mineField.removeAll();
+    for (int x = 0; x < width; ++x) {
+      for (int y = 0; y < length; ++y) {
+        mineField.add(tiles[y][x]);
+      }
     }
   }
 
@@ -217,9 +234,11 @@ public class Board {
     tile.setRevealed();
 
     // do not allow the first reveal to be a mine
-    if (numRevealed == 0 && tile.isMineTile() && !hasReset) {
-      tile.removeMine();
-      firstRevealBombMove();
+    if (numRevealed == 0 && tile.isMineTile() && !hasReset && length * width != 1) {
+      tile = new NumberTile(this, x, y);
+      tiles[y][x] = tile;
+      tile.setRevealed();
+      firstRevealBombMove(x, y);
     }
 
     if (tile.getNumber() == 0) {

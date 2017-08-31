@@ -1,4 +1,6 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+package ButtonSweeper;
+
+import ButtonSweeper.Util.Difficulty;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,10 @@ public class ButtSweeper {
 
   public JFrame getFrame() {
     return frame;
+  }
+
+  public SpriteHolder getSpriteHolder() {
+    return spriteHolder;
   }
 
   public void newGame() {
@@ -43,7 +49,7 @@ public class ButtSweeper {
           int length = Integer.parseInt(lengthField.getText());
           Difficulty difficulty = Difficulty.values()[difficultySelector.getSelectedIndex()];
           haveInput = true;
-          new Board(this, width, length, difficulty, spriteHolder);
+          new Board(this, width, length, difficulty);
         } catch (NumberFormatException e) {
           JOptionPane.showMessageDialog(null, "Invalid input!");
         }

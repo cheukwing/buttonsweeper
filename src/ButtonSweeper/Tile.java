@@ -1,16 +1,18 @@
+package ButtonSweeper;
+
+import ButtonSweeper.Util.Flag;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Tile extends JButton {
-  private boolean isMine;
+public abstract class Tile extends JButton {
   private boolean isRevealed;
   private Flag flag;
   private int number;
 
   public Tile(Board board, int x, int y) {
-    this.isMine = false;
     this.isRevealed = false;
     this.flag = Flag.EMPTY;
     this.number = 0;
@@ -28,6 +30,7 @@ public class Tile extends JButton {
         board.updateTiles(board.getHasGameEnded());
       }
     });
+
     this.setBorder(BorderFactory.createEmptyBorder());
     this.setContentAreaFilled(false);
     this.setMargin(new Insets(0, 0, 0, 0));
@@ -41,17 +44,7 @@ public class Tile extends JButton {
     flag = Flag.EMPTY;
   }
 
-  public boolean isMineTile() {
-    return isMine;
-  }
-
-  public void setMine() {
-    isMine = true;
-  }
-
-  public void removeMine() {
-    isMine = false;
-  }
+  public abstract boolean isMineTile();
 
   public boolean isRevealedTile() {
     return isRevealed;
@@ -72,5 +65,4 @@ public class Tile extends JButton {
   public void removeRevealed() {
     isRevealed = false;
   }
-
 }

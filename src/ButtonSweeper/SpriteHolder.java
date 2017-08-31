@@ -1,3 +1,7 @@
+package ButtonSweeper;
+
+import ButtonSweeper.Util.Flag;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -23,7 +27,7 @@ public class SpriteHolder {
   public SpriteHolder() throws IOException {
     sprites = new BufferedImage[NUM_SPRITES_COL * NUM_SPRITES_ROW];
 
-    BufferedImage spriteSheet = ImageIO.read(new File("img/spritesheet.png"));
+    BufferedImage spriteSheet = ImageIO.read(new File("src/ButtonSweeper/img/spritesheet.png"));
     for (int i = 0; i < NUM_SPRITES_ROW * NUM_SPRITES_COL; ++i) {
       sprites[i] = spriteSheet.getSubimage(
           X_SPRITE_START + (i % NUM_SPRITES_ROW) * (SPRITE_SIZE + 1),
