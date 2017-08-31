@@ -1,16 +1,16 @@
 package ButtonSweeper;
 
-import ButtonSweeper.Util.Difficulty;
+import ButtonSweeper.util.Difficulty;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class ButtSweeper {
+public class ButtonSweeper {
   private final JFrame frame;
   private final SpriteHolder spriteHolder;
 
-  private ButtSweeper() throws IOException {
+  private ButtonSweeper() throws IOException {
     this.frame = new JFrame("ButtonSweeper");
     frame.setLocationRelativeTo(null);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,8 +61,8 @@ public class ButtSweeper {
 
   public static void main(String[] args) {
     try {
-      ButtSweeper buttSweeper = new ButtSweeper();
-      buttSweeper.newGame();
+      ButtonSweeper buttonSweeper = new ButtonSweeper();
+      buttonSweeper.newGame();
     } catch (IOException e) {
       e.printStackTrace();
       System.out.println("ERROR: Could not find spritesheet!");

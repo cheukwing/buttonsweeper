@@ -1,4 +1,4 @@
-package ButtonSweeper.Tiles;
+package ButtonSweeper.tiles;
 
 import ButtonSweeper.Tile;
 import ButtonSweeper.Board;

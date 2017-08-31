@@ -1,6 +1,6 @@
 package ButtonSweeper;
 
-import ButtonSweeper.Util.Flag;
+import ButtonSweeper.util.Flag;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

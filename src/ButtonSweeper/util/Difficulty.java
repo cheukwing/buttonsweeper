@@ -1,4 +1,4 @@
-package ButtonSweeper.Util;
+package ButtonSweeper.util;
 
 public enum Difficulty {
   EASY,

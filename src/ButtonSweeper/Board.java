@@ -1,8 +1,8 @@
 package ButtonSweeper;
 
-import ButtonSweeper.Tiles.MineTile;
-import ButtonSweeper.Tiles.NumberTile;
-import ButtonSweeper.Util.Difficulty;
+import ButtonSweeper.tiles.MineTile;
+import ButtonSweeper.tiles.NumberTile;
+import ButtonSweeper.util.Difficulty;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class Board {
-  private final ButtSweeper buttSweeper;
+  private final ButtonSweeper buttonSweeper;
   private final SpriteHolder spriteHolder;
   private final JFrame frame;
   private final JPanel mineField;
@@ -25,14 +25,14 @@ public class Board {
 
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 85;
-  public static final int HARD_PROBABILITY = 50;
+  public static final int HARD_PROBABILITY = 80;
   public static final int SPRITE_RESIZE = 32;
 
-  public Board(ButtSweeper buttSweeper, int width, int length,
+  public Board(ButtonSweeper buttonSweeper, int width, int length,
                Difficulty difficulty) {
-    this.buttSweeper = buttSweeper;
-    this.spriteHolder = buttSweeper.getSpriteHolder();
-    this.frame = buttSweeper.getFrame();
+    this.buttonSweeper = buttonSweeper;
+    this.spriteHolder = buttonSweeper.getSpriteHolder();
+    this.frame = buttonSweeper.getFrame();
     this.width = width;
     this.length = length;
     this.numRevealed = 0;
@@ -83,7 +83,7 @@ public class Board {
     newGameButton.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent mouseEvent) {
-        buttSweeper.newGame();
+        buttonSweeper.newGame();
       }
     });
     options.add(newGameButton);
