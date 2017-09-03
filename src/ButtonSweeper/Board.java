@@ -22,6 +22,7 @@ public class Board {
   private int numMines;
   private boolean hasGameEnded;
   private boolean hasReset;
+  private long timeStart;
 
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 85;
@@ -64,7 +65,9 @@ public class Board {
     frame.getContentPane().removeAll();
 
     initialiseGame(probability);
-    frame.add(mineField, BorderLayout.CENTER);
+    frame.add(mineField, BorderLayout.NORTH);
+
+
 
     JPanel options = new JPanel();
     options.setLayout(new GridLayout(0, 2));
@@ -91,6 +94,7 @@ public class Board {
     frame.pack();
 
     frame.setVisible(true);
+    timeStart = System.currentTimeMillis();
   }
 
   private void initialiseGame(int probability) {
@@ -170,7 +174,8 @@ public class Board {
   private void end(boolean victory) {
     updateTiles(true);
     if (victory) {
-      messageHelper("You Win!");
+      messageHelper("You Win!\nTime: "
+          + ((System.currentTimeMillis() - timeStart) / 1000.0));
     } else {
       messageHelper("You Lose!");
     }
@@ -249,5 +254,6 @@ public class Board {
     hasReset = true;
     updateTiles(false);
     hasGameEnded = false;
+    timeStart = System.currentTimeMillis();
   }
 }
