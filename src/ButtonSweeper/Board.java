@@ -101,14 +101,12 @@ public class Board {
       }
     }
 
-
     // add mines randomly, do not allow an empty board unless 1x1 board
     Random random = new Random();
     do {
       addMines(random, probability);
     } while (numMines < 1 && width * length != 1);
 
-    refreshPanel();
     // update tile numbers
     setTileNumbers();
     updateTiles(false);
@@ -123,6 +121,7 @@ public class Board {
         }
       }
     }
+    refreshPanel();
   }
 
   private void setTileNumbers() {
@@ -194,27 +193,17 @@ public class Board {
     }
   }
 
-  private void firstRevealBombMove(int revealedX, int revealedY) {
-    int x = 0;
-    int y = 0;
-
-    // move the bomb to top left tile, if already a mine, continue till free space
-    while (y < length && tiles[y][x].isMineTile() || (y == revealedY && x == revealedX)) {
-      if (x >= width - 1) {
-        x = 0;
-        ++y;
-      } else {
-        ++x;
+  private void firstRevealBombMove(int x, int y) {
+    for (int i = 0; i < width; ++i) {
+      for (int j = 0; j < length; ++j) {
+        if (!tiles[j][i].isMineTile() && (i != x || j != y)) {
+          tiles[j][i] = new MineTile(this, i, j);
+          setTileNumbers();
+          refreshPanel();
+          return;
+        }
       }
     }
-
-    // if there is a free space, set it as a mine and update the numbers
-    if (x < width && y < length) {
-      tiles[y][x] = new MineTile(this, x, y);
-      setTileNumbers();
-    }
-
-    refreshPanel();
   }
 
   private void refreshPanel() {

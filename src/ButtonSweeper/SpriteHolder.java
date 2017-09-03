@@ -45,12 +45,12 @@ public class SpriteHolder {
     }
   }
 
-  public Image getNumberImg(int n) {
+  private Image getNumberImg(int n) {
     return (n == 0) ? sprites[INDEX_BLANK] : sprites[NUM_SPRITES_ROW + n - 1];
   }
 
   // PRE: is not empty flag
-  public Image getFlagImg(Flag flag) {
+  private Image getFlagImg(Flag flag) {
     switch (flag) {
       case FLAGGED:
         return sprites[INDEX_FLAG];
