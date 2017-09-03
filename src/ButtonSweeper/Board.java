@@ -26,7 +26,6 @@ public class Board {
   public static final int EASY_PROBABILITY = 90;
   public static final int MEDIUM_PROBABILITY = 85;
   public static final int HARD_PROBABILITY = 80;
-  public static final int SPRITE_RESIZE = 32;
 
   public Board(ButtonSweeper buttonSweeper, int width, int length,
                Difficulty difficulty) {
@@ -190,8 +189,7 @@ public class Board {
         tiles[i][j].setIcon(
             new ImageIcon(
                 spriteHolder
-                    .getTileImage(tiles[i][j], revealBombs)
-                    .getScaledInstance(SPRITE_RESIZE, SPRITE_RESIZE, Image.SCALE_SMOOTH)));
+                    .getTileImage(tiles[i][j], revealBombs)));
       }
     }
   }

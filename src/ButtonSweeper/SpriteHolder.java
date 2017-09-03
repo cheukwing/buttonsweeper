@@ -3,6 +3,7 @@ package ButtonSweeper;
 import ButtonSweeper.util.Flag;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ public class SpriteHolder {
   public static final int Y_SPRITE_START = 53;
   public static final int NUM_SPRITES_ROW = 8;
   public static final int NUM_SPRITES_COL = 2;
+  public static final int SPRITE_RESIZE = 32;
 
   public static final int INDEX_FLAG = 2;
   public static final int INDEX_Q_FLAG = 3;
@@ -22,27 +24,33 @@ public class SpriteHolder {
   public static final int INDEX_UNREVEALED = 0;
   public static final int INDEX_BLANK = 1;
 
-  private final BufferedImage[] sprites;
+  private final Image[] sprites;
 
   public SpriteHolder() throws IOException {
-    sprites = new BufferedImage[NUM_SPRITES_COL * NUM_SPRITES_ROW];
+    sprites = new Image[NUM_SPRITES_COL * NUM_SPRITES_ROW];
 
-    BufferedImage spriteSheet = ImageIO.read(new File("src/ButtonSweeper/img/spritesheet.png"));
+    BufferedImage spriteSheet;
+    try {
+      spriteSheet = ImageIO.read(new File("src/ButtonSweeper/img/spritesheet.png"));
+    } catch (IOException e) {
+      spriteSheet = ImageIO.read(new File("ButtonSweeper/img/spritesheet.png"));
+    }
+
     for (int i = 0; i < NUM_SPRITES_ROW * NUM_SPRITES_COL; ++i) {
       sprites[i] = spriteSheet.getSubimage(
           X_SPRITE_START + (i % NUM_SPRITES_ROW) * (SPRITE_SIZE + 1),
           Y_SPRITE_START + ((i >= NUM_SPRITES_ROW) ? (1 + SPRITE_SIZE) : 0),
           SPRITE_SIZE,
-          SPRITE_SIZE);
+          SPRITE_SIZE).getScaledInstance(SPRITE_RESIZE, SPRITE_RESIZE, Image.SCALE_SMOOTH);
     }
   }
 
-  public BufferedImage getNumberImg(int n) {
+  public Image getNumberImg(int n) {
     return (n == 0) ? sprites[INDEX_BLANK] : sprites[NUM_SPRITES_ROW + n - 1];
   }
 
   // PRE: is not empty flag
-  public BufferedImage getFlagImg(Flag flag) {
+  public Image getFlagImg(Flag flag) {
     switch (flag) {
       case FLAGGED:
         return sprites[INDEX_FLAG];
@@ -53,7 +61,7 @@ public class SpriteHolder {
     }
   }
 
-  public BufferedImage getTileImage(Tile tile, boolean revealBombs) {
+  public Image getTileImage(Tile tile, boolean revealBombs) {
     if (tile.isRevealedTile()) {
       if (tile.isMineTile()) {
         return sprites[INDEX_T_BOMB];
