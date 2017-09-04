@@ -17,7 +17,7 @@ public abstract class Tile extends JButton {
     this.flag = Flag.EMPTY;
     this.number = 0;
 
-    this.addMouseListener(new MouseAdapter() {
+    addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(MouseEvent mouseEvent) {
         if (!board.getHasGameEnded()) {
@@ -31,9 +31,9 @@ public abstract class Tile extends JButton {
       }
     });
 
-    this.setBorder(BorderFactory.createEmptyBorder());
-    this.setContentAreaFilled(false);
-    this.setMargin(new Insets(0, 0, 0, 0));
+    setBorder(BorderFactory.createEmptyBorder());
+    setContentAreaFilled(false);
+    setMargin(new Insets(0, 0, 0, 0));
   }
 
   public Flag getFlag() {

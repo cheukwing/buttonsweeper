@@ -19,10 +19,6 @@ public class Board extends JPanel {
   private boolean hasReset;
   private long timeStart;
 
-  public static final int EASY_PROBABILITY = 90;
-  public static final int MEDIUM_PROBABILITY = 85;
-  public static final int HARD_PROBABILITY = 80;
-
   public Board(int width, int length, Difficulty difficulty, SpriteHolder spriteHolder) {
     this.spriteHolder = spriteHolder;
     this.width = width;
@@ -32,43 +28,27 @@ public class Board extends JPanel {
     this.numMines = 0;
     this.hasGameEnded = false;
     this.hasReset = false;
-    this.setLayout(new GridLayout(length, width));
 
-    int probability;
-    switch (difficulty) {
-      case EASY: {
-        probability = EASY_PROBABILITY;
-        break;
-      }
-      case MEDIUM: {
-        probability = MEDIUM_PROBABILITY;
-        break;
-      }
-      case HARD: // fall-through
-      default: {
-        probability = HARD_PROBABILITY;
-      }
-    }
+    setLayout(new GridLayout(length, width));
+    initialiseGame(difficulty);
 
-    initialiseGame(probability);
-    timeStart = System.currentTimeMillis();
+    this.timeStart = System.currentTimeMillis();
   }
 
-  private void initialiseGame(int probability) {
-    // add tiles to array
+  private void initialiseGame(Difficulty difficulty) {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
         tiles[y][x] = new NumberTile(this, x, y);
       }
     }
 
+    int probability = difficulty.getProbability();
     // add mines randomly, do not allow an empty board unless 1x1 board
     Random random = new Random();
     do {
       addMines(random, probability);
     } while (numMines < 1 && width * length != 1);
 
-    // update tile numbers
     setTileNumbers();
     updateTiles(false);
   }
@@ -86,8 +66,8 @@ public class Board extends JPanel {
   }
 
   private void setTileNumbers() {
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < length; y++) {
+    for (int x = 0; x < width; ++x) {
+      for (int y = 0; y < length; ++y) {
         tiles[y][x].setNumber(getSurroundingMines(x, y));
       }
     }
@@ -95,8 +75,8 @@ public class Board extends JPanel {
 
   private int getSurroundingMines(int x, int y) {
     int mines = 0;
-    for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); i++) {
-      for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); j++) {
+    for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); ++i) {
+      for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); ++j) {
         if (tiles[j][i].isMineTile()) {
           ++mines;
         }
@@ -110,8 +90,8 @@ public class Board extends JPanel {
   }
 
   private void revealSurroundings(int x, int y) {
-    for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); i++) {
-      for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); j++) {
+    for (int i = Math.max(0, x - 1); i <= Math.min(width - 1, x + 1); ++i) {
+      for (int j = Math.max(0, y - 1); j <= Math.min(length - 1, y + 1); ++j) {
         if (!tiles[j][i].isRevealedTile() && !tiles[j][i].isMineTile()) {
           revealTile(i, j);
         }
@@ -202,8 +182,8 @@ public class Board extends JPanel {
 
   public void reset() {
     numRevealed = 0;
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < length; y++) {
+    for (int x = 0; x < width; ++x) {
+      for (int y = 0; y < length; ++y) {
         tiles[y][x].setRevealed(false);
         tiles[y][x].clearFlag();
       }
