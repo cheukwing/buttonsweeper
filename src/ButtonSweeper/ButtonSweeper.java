@@ -1,30 +1,43 @@
 package ButtonSweeper;
 
+import ButtonSweeper.util.MouseButton;
 import ButtonSweeper.util.Difficulty;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class ButtonSweeper extends JFrame {
   private final SpriteHolder spriteHolder;
+  private final MouseButton resetButton;
+  private Board board;
 
   private ButtonSweeper() throws IOException {
     super("ButtonSweeper");
     this.setLocationRelativeTo(null);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//    this.frame = new JFrame("ButtonSweeper");
-//    frame.setLocationRelativeTo(null);
-//    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.spriteHolder = new SpriteHolder();
-  }
-//
-//  public JFrame getFrame() {
-//    return frame;
-//  }
 
-  public SpriteHolder getSpriteHolder() {
-    return spriteHolder;
+    JPanel options = new JPanel();
+    options.setLayout(new GridLayout(0, 2));
+
+    this.resetButton = new MouseButton("Reset", new MouseAdapter() {
+      @Override
+      public void mouseReleased(MouseEvent mouseEvent) {}
+    });
+    options.add(resetButton);
+
+    MouseButton newGameButton = new MouseButton("New Game", new MouseAdapter() {
+      @Override
+      public void mouseReleased(MouseEvent mouseEvent) {
+        newGame();
+      }
+    });
+    options.add(newGameButton);
+
+    this.add(options, BorderLayout.SOUTH);
   }
 
   public void newGame() {
@@ -51,7 +64,19 @@ public class ButtonSweeper extends JFrame {
           int length = Integer.parseInt(lengthField.getText());
           Difficulty difficulty = Difficulty.values()[difficultySelector.getSelectedIndex()];
           haveInput = true;
-          new Board(this, width, length, difficulty);
+          if (board != null) {
+            this.remove(board);
+          }
+          board = new Board(width, length, difficulty, spriteHolder);
+          resetButton.replaceMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+              board.reset();
+            }
+          });
+          this.add(board, BorderLayout.NORTH);
+          this.pack();
+          this.setVisible(true);
         } catch (NumberFormatException e) {
           JOptionPane.showMessageDialog(null, "Invalid input!");
         }

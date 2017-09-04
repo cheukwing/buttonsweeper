@@ -6,15 +6,10 @@ import ButtonSweeper.util.Difficulty;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Random;
 
-public class Board {
-  private final ButtonSweeper buttonSweeper;
+public class Board extends JPanel {
   private final SpriteHolder spriteHolder;
-//  private final JFrame frame;
-  private final JPanel mineField;
   private final Tile[][] tiles;
   private final int width;
   private final int length;
@@ -28,11 +23,8 @@ public class Board {
   public static final int MEDIUM_PROBABILITY = 85;
   public static final int HARD_PROBABILITY = 80;
 
-  public Board(ButtonSweeper buttonSweeper, int width, int length,
-               Difficulty difficulty) {
-    this.buttonSweeper = buttonSweeper;
-    this.spriteHolder = buttonSweeper.getSpriteHolder();
-//    this.frame = buttonSweeper.getFrame();
+  public Board(int width, int length, Difficulty difficulty, SpriteHolder spriteHolder) {
+    this.spriteHolder = spriteHolder;
     this.width = width;
     this.length = length;
     this.numRevealed = 0;
@@ -40,7 +32,7 @@ public class Board {
     this.numMines = 0;
     this.hasGameEnded = false;
     this.hasReset = false;
-    this.mineField = new JPanel(new GridLayout(length, width));
+    this.setLayout(new GridLayout(length, width));
 
     int probability;
     switch (difficulty) {
@@ -58,46 +50,7 @@ public class Board {
       }
     }
 
-    setup(probability);
-  }
-
-  private void setup(int probability) {
-    buttonSweeper.getContentPane().removeAll();
-//    frame.getContentPane().removeAll();
-
     initialiseGame(probability);
-    buttonSweeper.add(mineField, BorderLayout.NORTH);
-//    frame.add(mineField, BorderLayout.NORTH);
-
-    JPanel options = new JPanel();
-    options.setLayout(new GridLayout(0, 2));
-
-    JButton resetButton = new JButton("Reset");
-    resetButton.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseReleased(MouseEvent mouseEvent) {
-        reset();
-      }
-    });
-    options.add(resetButton);
-
-    JButton newGameButton = new JButton("New Game");
-    newGameButton.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseReleased(MouseEvent mouseEvent) {
-        buttonSweeper.newGame();
-      }
-    });
-    options.add(newGameButton);
-
-    buttonSweeper.add(options, BorderLayout.SOUTH);
-    buttonSweeper.pack();
-    buttonSweeper.setVisible(true);
-
-//    frame.add(options, BorderLayout.SOUTH);
-//    frame.pack();
-//    frame.setVisible(true);
-
     timeStart = System.currentTimeMillis();
   }
 
@@ -216,10 +169,12 @@ public class Board {
   }
 
   private void refreshPanel() {
-    mineField.removeAll();
+    this.removeAll();
+//    mineField.removeAll();
     for (int x = 0; x < width; ++x) {
       for (int y = 0; y < length; ++y) {
-        mineField.add(tiles[y][x]);
+//        mineField.add(tiles[y][x]);
+        this.add(tiles[y][x]);
       }
     }
   }
@@ -227,13 +182,13 @@ public class Board {
   // PRE: x, y are in bounds
   public void revealTile(int x, int y) {
     Tile tile = tiles[y][x];
-    tile.setRevealed();
+    tile.setRevealed(true);
 
     // do not allow the first reveal to be a mine
     if (numRevealed == 0 && tile.isMineTile() && !hasReset && length * width != 1) {
       tile = new NumberTile(this, x, y);
       tiles[y][x] = tile;
-      tile.setRevealed();
+      tile.setRevealed(true);
       firstRevealBombMove(x, y);
     }
 
@@ -247,11 +202,11 @@ public class Board {
     }
   }
 
-  private void reset() {
+  public void reset() {
     numRevealed = 0;
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < length; y++) {
-        tiles[y][x].removeRevealed();
+        tiles[y][x].setRevealed(false);
         tiles[y][x].clearFlag();
       }
     }
