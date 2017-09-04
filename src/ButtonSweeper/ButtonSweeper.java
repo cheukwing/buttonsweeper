@@ -6,20 +6,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-public class ButtonSweeper {
-  private final JFrame frame;
+public class ButtonSweeper extends JFrame {
   private final SpriteHolder spriteHolder;
 
   private ButtonSweeper() throws IOException {
-    this.frame = new JFrame("ButtonSweeper");
-    frame.setLocationRelativeTo(null);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    super("ButtonSweeper");
+    this.setLocationRelativeTo(null);
+    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//    this.frame = new JFrame("ButtonSweeper");
+//    frame.setLocationRelativeTo(null);
+//    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.spriteHolder = new SpriteHolder();
   }
-
-  public JFrame getFrame() {
-    return frame;
-  }
+//
+//  public JFrame getFrame() {
+//    return frame;
+//  }
 
   public SpriteHolder getSpriteHolder() {
     return spriteHolder;

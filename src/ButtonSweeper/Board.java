@@ -13,7 +13,7 @@ import java.util.Random;
 public class Board {
   private final ButtonSweeper buttonSweeper;
   private final SpriteHolder spriteHolder;
-  private final JFrame frame;
+//  private final JFrame frame;
   private final JPanel mineField;
   private final Tile[][] tiles;
   private final int width;
@@ -32,7 +32,7 @@ public class Board {
                Difficulty difficulty) {
     this.buttonSweeper = buttonSweeper;
     this.spriteHolder = buttonSweeper.getSpriteHolder();
-    this.frame = buttonSweeper.getFrame();
+//    this.frame = buttonSweeper.getFrame();
     this.width = width;
     this.length = length;
     this.numRevealed = 0;
@@ -62,12 +62,12 @@ public class Board {
   }
 
   private void setup(int probability) {
-    frame.getContentPane().removeAll();
+    buttonSweeper.getContentPane().removeAll();
+//    frame.getContentPane().removeAll();
 
     initialiseGame(probability);
-    frame.add(mineField, BorderLayout.NORTH);
-
-
+    buttonSweeper.add(mineField, BorderLayout.NORTH);
+//    frame.add(mineField, BorderLayout.NORTH);
 
     JPanel options = new JPanel();
     options.setLayout(new GridLayout(0, 2));
@@ -90,10 +90,14 @@ public class Board {
     });
     options.add(newGameButton);
 
-    frame.add(options, BorderLayout.SOUTH);
-    frame.pack();
+    buttonSweeper.add(options, BorderLayout.SOUTH);
+    buttonSweeper.pack();
+    buttonSweeper.setVisible(true);
 
-    frame.setVisible(true);
+//    frame.add(options, BorderLayout.SOUTH);
+//    frame.pack();
+//    frame.setVisible(true);
+
     timeStart = System.currentTimeMillis();
   }
 
