@@ -58,7 +58,7 @@ public abstract class Tile extends JButton {
     return number;
   }
 
-  public void setRevealed(boolean b) {
-    isRevealed = b;
+  public void setRevealed(boolean isRevealed) {
+    this.isRevealed = isRevealed;
   }
 }

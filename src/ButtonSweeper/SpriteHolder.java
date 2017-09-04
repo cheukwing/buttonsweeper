@@ -49,7 +49,6 @@ public class SpriteHolder {
     return (n == 0) ? sprites[INDEX_BLANK] : sprites[NUM_SPRITES_ROW + n - 1];
   }
 
-  // PRE: is not empty flag
   private Image getFlagImg(Flag flag) {
     switch (flag) {
       case FLAGGED:
@@ -57,7 +56,7 @@ public class SpriteHolder {
       case QUESTION_FLAGGED:
         return sprites[INDEX_Q_FLAG];
       default:
-        return null;
+        return sprites[INDEX_UNREVEALED];
     }
   }
 

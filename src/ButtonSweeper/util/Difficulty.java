@@ -6,6 +6,7 @@ public enum Difficulty {
   HARD(80);
 
   private int probability;
+
   Difficulty(int probability) {
     this.probability = probability;
   }
