@@ -169,12 +169,10 @@ public class Board extends JPanel {
   }
 
   private void refreshPanel() {
-    this.removeAll();
-//    mineField.removeAll();
+    removeAll();
     for (int x = 0; x < width; ++x) {
       for (int y = 0; y < length; ++y) {
-//        mineField.add(tiles[y][x]);
-        this.add(tiles[y][x]);
+        add(tiles[y][x]);
       }
     }
   }

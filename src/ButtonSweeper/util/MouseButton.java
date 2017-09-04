@@ -5,8 +5,7 @@ import java.awt.event.MouseListener;
 
 public class MouseButton extends JButton {
 
-  public MouseButton() {
-  }
+  public MouseButton() {}
 
   public MouseButton(Icon icon) {
     super(icon);
